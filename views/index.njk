@@ -1,0 +1,32 @@
+{% extends "base.njk" %}
+
+{% block title %}Notes - Home{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+{% include "partials/header.njk" %}
+<div class="landing-container">
+  <h1>📝 Notes</h1>
+  <div class="subtitle">Your thoughts, organized</div>
+  <p class="description">
+    A simple and elegant notetaking app to capture your ideas, 
+    organize your thoughts, and keep everything in sync.
+  </p>
+  
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-text">Fast & Simple</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-text">Secure</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">☁️</div>
+      <div class="feature-text">Cloud Sync</div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+<div class="app-header">
+  <div class="header-content">
+    <a href="/" class="logo">📝 Notes</a>
+    <div class="auth-buttons">
+      {% if user %}
+        <span class="user-info">{{ user.claims.email or user.claims.sub }}</span>
+        <a href="/auth/logout"><button class="btn btn-primary">Log Out</button></a>
+      {% else %}
+        <a href="/auth/login"><button class="btn btn-outline">Log In</button></a>
+      {% endif %}
+    </div>
+  </div>
+</div>

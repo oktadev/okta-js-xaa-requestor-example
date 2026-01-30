@@ -1,0 +1,86 @@
+{% extends "base.njk" %}
+
+{% block title %}Notes - My Notes App{% endblock %}
+
+{% block content %}
+<div class="notes-page">
+{% include "partials/header.njk" %}
+<div class="notes-header">
+  <h2>My Notes</h2>
+  <button class="new-note-btn" onclick="openNewNoteModal()">+ New Note</button>
+</div>
+
+<div class="container">
+  <div class="sidebar">
+    {% for note in notes %}
+      <a href="/notes?id={{ note.id }}" class="note-item {% if note.isActive %}active{% endif %}">
+        <div class="note-preview">{{ note.message }}</div>
+      </a>
+    {% endfor %}
+  </div>
+  
+  <div class="main-content">
+    {% if selectedNote %}
+      <div class="note-detail">
+        <div class="note-message">{{ selectedNote.message }}</div>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h2>Select a note to view</h2>
+        <p>or create a new note to get started</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="todos-sidebar">
+    <h3>📋 Todos</h3>
+    <div class="todos-list">
+      {% if todos.length > 0 %}
+        {% for todo in todos %}
+          <div class="todo-item {% if todo.completed %}completed{% endif %}">
+            <span class="todo-checkbox">{% if todo.completed %}✓{% else %}○{% endif %}</span>
+            <span class="todo-title">{{ todo.title }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="empty-todos">No todos yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="newNoteModal">
+  <div class="modal-content">
+    <h2>New Note</h2>
+    <form action="/notes" method="POST">
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeNewNoteModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openNewNoteModal() {
+    document.getElementById('newNoteModal').classList.add('active');
+  }
+  
+  function closeNewNoteModal() {
+    document.getElementById('newNoteModal').classList.remove('active');
+  }
+  
+  document.getElementById('newNoteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeNewNoteModal();
+    }
+  });
+</script>
+{% endblock %}
