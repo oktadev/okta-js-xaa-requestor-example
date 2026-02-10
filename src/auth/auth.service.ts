@@ -86,27 +86,12 @@ export class AuthService implements OnModuleInit {
     idpConfig[openidClient.customFetch] = loggedFetch;
 
     // Step 1: Exchange ID token for ID-JAG token
-    const idJagToken = await this.exchangeIdTokenForIdJag(
-      idpConfig,
-      idToken,
-      authServerUrl,
-      resourceUrl,
-      scope,
-    );
 
     // Step 2: Exchange ID-JAG token for access token
-    const resourceAuthConfig = await openidClient.discovery(
-      new URL(authServerUrl),
-      clientId,
-      clientSecret,
-    );
-    resourceAuthConfig[openidClient.customFetch] = loggedFetch;
 
-    return this.exchangeIdJagForAccessToken(
-      resourceAuthConfig,
-      idJagToken,
-      scope,
-    );
+    // Placeholder implementation, remove when code is added
+    await Promise.resolve();
+    return `placeholder using ${idToken} ${resourceUrl} ${scope.join(' ')}`;
   }
 
   /**
@@ -137,22 +122,9 @@ export class AuthService implements OnModuleInit {
     resourceUrl: string,
     scope: string[],
   ): Promise<string> {
-    const tokenExchangeParams = {
-      requested_token_type: 'urn:ietf:params:oauth:token-type:id-jag',
-      audience: authServerUrl,
-      resource: resourceUrl,
-      subject_token: idToken,
-      subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',
-      scope: scope.join(' '),
-    };
-
-    const tokenExchangeResponse = await openidClient.genericGrantRequest(
-      config,
-      'urn:ietf:params:oauth:grant-type:token-exchange',
-      tokenExchangeParams,
-    );
-
-    return tokenExchangeResponse.access_token;
+    // add logic to return an ID-JAG token given the user's ID token
+    await Promise.resolve();
+    return `placeholder using ${idToken} ${authServerUrl} ${resourceUrl} ${scope.join(' ')}`;
   }
 
   /**
@@ -163,17 +135,8 @@ export class AuthService implements OnModuleInit {
     idJagToken: string,
     scope: string[],
   ): Promise<string> {
-    const jwtBearerParams = {
-      assertion: idJagToken,
-      scope: scope.join(' '),
-    };
-
-    const resourceTokenResponse = await openidClient.genericGrantRequest(
-      config,
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      jwtBearerParams,
-    );
-
-    return resourceTokenResponse.access_token;
+    // add logic to return an access token given the ID-JAG token
+    await Promise.resolve();
+    return `placeholder using ${idJagToken} ${scope.join(' ')}`;
   }
 }
