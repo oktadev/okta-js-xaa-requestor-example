@@ -61,5 +61,5 @@ Please post any questions as comments on the [blog post][blog], or visit our [Ok
 
 Apache 2.0, see [LICENSE](LICENSE).
 
-[blog]: https://developer.okta.com/blog/2026/02/03/xaa-client
+[blog]: https://developer.okta.com/blog/2026/02/10/xaa-client
 
