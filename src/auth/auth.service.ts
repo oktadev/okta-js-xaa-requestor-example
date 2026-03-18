@@ -137,22 +137,8 @@ export class AuthService implements OnModuleInit {
     resourceUrl: string,
     scope: string[],
   ): Promise<string> {
-    const tokenExchangeParams = {
-      requested_token_type: 'urn:ietf:params:oauth:token-type:id-jag',
-      audience: authServerUrl,
-      resource: resourceUrl,
-      subject_token: idToken,
-      subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',
-      scope: scope.join(' '),
-    };
-
-    const tokenExchangeResponse = await openidClient.genericGrantRequest(
-      config,
-      'urn:ietf:params:oauth:grant-type:token-exchange',
-      tokenExchangeParams,
-    );
-
-    return tokenExchangeResponse.access_token;
+    // TODO: paste Step 1 implementation from the XAA Workshop tour
+    throw new Error('Not implemented');
   }
 
   /**
@@ -163,17 +149,7 @@ export class AuthService implements OnModuleInit {
     idJagToken: string,
     scope: string[],
   ): Promise<string> {
-    const jwtBearerParams = {
-      assertion: idJagToken,
-      scope: scope.join(' '),
-    };
-
-    const resourceTokenResponse = await openidClient.genericGrantRequest(
-      config,
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      jwtBearerParams,
-    );
-
-    return resourceTokenResponse.access_token;
+    // TODO: paste Step 2 implementation from the XAA Workshop tour
+    throw new Error('Not implemented');
   }
 }

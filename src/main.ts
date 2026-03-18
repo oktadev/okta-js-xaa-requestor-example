@@ -9,6 +9,10 @@ import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Trust the first proxy hop so req.protocol reflects the public-facing scheme
+  // (https) rather than the internal http used inside Codespaces / reverse proxies
+  app.set('trust proxy', 1);
   const configService = app.get(ConfigService);
 
   // Validation: Enable global validation pipe
@@ -36,7 +40,7 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         secure: configService.get<string>('NODE_ENV') === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax', // 'strict' blocks the cross-site OAuth callback redirect
         maxAge: 2 * 60 * 60 * 1000, // 2 hours
       },
     }),

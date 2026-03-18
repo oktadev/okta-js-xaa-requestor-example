@@ -1,0 +1,27 @@
+{
+  "name": "XAA Workshop",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  // Install npm dependencies as soon as the container is created
+  "postCreateCommand": "npm ci",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vsls-contrib.codetour"
+      ],
+      "settings": {
+        "codetour.showMarkers": true
+      }
+    }
+  },
+
+  // Forward port 3000 so the app is immediately accessible in the browser
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "App A (XAA Requestor)",
+      "onAutoForward": "openPreview"
+    }
+  }
+}

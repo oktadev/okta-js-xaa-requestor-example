@@ -1,0 +1,25 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "XAA Workshop",
+  "steps": [
+    {
+      "file": ".env.example",
+      "line": 7,
+      "title": "Step 1 — Config: Wiring Up Your Client Credentials",
+      "description": "## Setting Up Your IdP Client\n\nBefore any token exchange can happen, App A needs to identify itself to the IdP. These four environment variables are the foundation:\n\n| Variable | Purpose |\n|---|---|\n| `IDP_URL` | Identity Provider — where users log in |\n| `AUTH_SERVER_URL` | Resource Auth Server — issues tokens for App B |\n| `TODO_RESOURCE_SERVER` | App B's API base URL |\n| `CLIENT_ID` | **Your app's public identifier** (this line) |\n| `CLIENT_SECRET` | Your app's private credential |\n\n### What to do\n1. Register at [xaa.dev/developer/register](https://xaa.dev/developer/register)\n2. Copy `.env.example` → `.env`\n3. Paste your `client_id` and `client_secret` into `.env`\n\nIn `src/auth/auth.service.ts` (line 14–26), these values are loaded at startup and passed to `openidClient.discovery()`, which fetches the IdP's OIDC metadata automatically.\n\n> **💡 Claude Command:** Open the Claude Code chat and ask:\n> *\"What is the difference between CLIENT_ID and CLIENT_SECRET, and why should the secret never be committed to git?\"*"
+    },
+    {
+      "file": "src/auth/auth.service.ts",
+      "line": 140,
+      "title": "Step 2 — The Request: Executing the Two-Step ID-JAG Exchange",
+      "description": "## Your Turn: Implement the Two-Step Token Exchange\n\nYou're looking at the two stubbed methods that power the XAA flow. Paste each implementation below into its matching `TODO` in this file, then save.\n\n---\n\n### Paste this into `exchangeIdTokenForIdJag()` (replaces the TODO at line 140)\n\n**What it does:** Sends the user's `id_token` to the IdP using a `token-exchange` grant and receives an ID-JAG token — a short-lived identity assertion proving who the user is.\n\n```typescript\nconst tokenExchangeParams = {\n  requested_token_type: 'urn:ietf:params:oauth:token-type:id-jag',\n  audience: authServerUrl,\n  resource: resourceUrl,\n  subject_token: idToken,\n  subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',\n  scope: scope.join(' '),\n};\n\nconst tokenExchangeResponse = await openidClient.genericGrantRequest(\n  config,\n  'urn:ietf:params:oauth:grant-type:token-exchange',\n  tokenExchangeParams,\n);\n\nreturn tokenExchangeResponse.access_token;\n```\n\n---\n\n### Paste this into `exchangeIdJagForAccessToken()` (replaces the TODO at line 152)\n\n**What it does:** Sends the ID-JAG token to the Resource Auth Server using a `jwt-bearer` grant and receives an access token scoped to App B.\n\n```typescript\nconst jwtBearerParams = {\n  assertion: idJagToken,\n  scope: scope.join(' '),\n};\n\nconst resourceTokenResponse = await openidClient.genericGrantRequest(\n  config,\n  'urn:ietf:params:oauth:grant-type:jwt-bearer',\n  jwtBearerParams,\n);\n\nreturn resourceTokenResponse.access_token;\n```\n\n---\n\nSave the file, restart the app with `npm start`, and reload the `/notes` page — the Todos panel should now populate.\n\n> **🔍 Pro-Tip:** Want to inspect the ID-JAG token? After pasting Step 1, add:\n> ```typescript\n> console.log('ID-JAG token:', tokenExchangeResponse.access_token);\n> ```\n> Copy the token from your terminal and paste it into [jwt.io](https://jwt.io) to decode the claims.\n\n> **💡 Claude Command:** Open the Claude Code chat and ask:\n> *\"Walk me through what happens if the `todos.read` scope requested here isn't recognized by the resource server.\"*"
+    },
+    {
+      "file": "src/common/auth.guard.ts",
+      "line": 14,
+      "title": "Step 3 — The Validation: Enforcing Authentication on Protected Routes",
+      "description": "## Protecting Routes with AuthGuard\n\nThis NestJS guard runs *before* any protected controller method (e.g., `GET /notes`). It enforces a simple but critical check:\n\n```typescript\nif (!request.session?.user?.accessToken) {\n  throw new UnauthorizedException('Authentication required');\n}\n```\n\n### What this validates\n- ✅ An authenticated session exists\n- ✅ The session contains a valid `accessToken` (set during the OAuth callback)\n- ❌ No token → request is rejected with a `401 Unauthorized` before any business logic runs\n\n### Where it's applied\nIn `src/notes/notes.controller.ts`, the guard is applied with `@UseGuards(AuthGuard)` on the `/notes` route — the page that triggers the XAA flow to load todos from App B.\n\n### How App B validates tokens\nOn the App B side (the remote Todos API), *its* middleware performs full JWT signature verification against the Resource Auth Server's JWKS endpoint. The access token issued in Step 3 carries the `todos.read` scope, which App B checks before returning data.\n\n> **💡 Claude Command:** Open the Claude Code chat and ask:\n> *\"How would I extend this AuthGuard to also verify that the session's access token has not expired, and refresh it if needed?\"*"
+    }
+  ],
+  "ref": "xaa-codetour"
+}
