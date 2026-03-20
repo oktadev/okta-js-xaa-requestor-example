@@ -23,7 +23,10 @@ export class AuthController {
     @Req() req: RequestWithSession,
     @Res() res: Response,
   ): Promise<void> {
-    const redirectUri = `${req.protocol}://${req.get('host')}/auth/callback`;
+    const proto = req.get('x-forwarded-proto') || req.protocol || 'http';
+    const host = req.get('x-forwarded-host') || req.get('host');
+    const redirectUri = `${proto}://${host}/auth/callback`;
+
     const { authUrl, codeVerifier } =
       await this.authService.generateAuthUrl(redirectUri);
 
@@ -53,8 +56,10 @@ export class AuthController {
       throw new HttpException('Missing code verifier', HttpStatus.BAD_REQUEST);
     }
 
+    const currentProto = req.get('x-forwarded-proto') || req.protocol || 'http';
+    const currentHost = req.get('x-forwarded-host') || req.get('host');
     const currentUrl = new URL(
-      `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+      `${currentProto}://${currentHost}${req.originalUrl}`,
     );
     const result = await this.authService.handleCallback(
       currentUrl,
