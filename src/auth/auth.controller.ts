@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import type { RequestWithSession } from '../common/session.types';
@@ -16,14 +17,19 @@ import type { RequestWithSession } from '../common/session.types';
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get('login')
   async login(
     @Req() req: RequestWithSession,
     @Res() res: Response,
   ): Promise<void> {
-    const redirectUri = `${req.protocol}://${req.get('host')}/auth/callback`;
+    const redirectUri =
+      this.configService.get<string>('REDIRECT_URI') ??
+      `${req.protocol}://${req.get('host')}/auth/callback`;
     const { authUrl, codeVerifier } =
       await this.authService.generateAuthUrl(redirectUri);
 
@@ -53,8 +59,12 @@ export class AuthController {
       throw new HttpException('Missing code verifier', HttpStatus.BAD_REQUEST);
     }
 
+    const redirectUri =
+      this.configService.get<string>('REDIRECT_URI') ??
+      `${req.protocol}://${req.get('host')}/auth/callback`;
+    const queryString = req.url.split('?')[1] || '';
     const currentUrl = new URL(
-      `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+      `${redirectUri}${queryString ? '?' + queryString : ''}`,
     );
     const result = await this.authService.handleCallback(
       currentUrl,
