@@ -28,6 +28,8 @@ async function bootstrap() {
     );
   }
 
+  app.set('trust proxy', 1);
+
   app.use(
     session({
       secret: sessionSecret,
@@ -35,8 +37,8 @@ async function bootstrap() {
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
-        secure: configService.get<string>('NODE_ENV') === 'production',
-        sameSite: 'strict',
+        secure: 'auto',
+        sameSite: 'lax',
         maxAge: 2 * 60 * 60 * 1000, // 2 hours
       },
     }),

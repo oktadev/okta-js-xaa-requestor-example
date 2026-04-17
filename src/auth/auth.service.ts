@@ -23,6 +23,7 @@ export class AuthService implements OnModuleInit {
       new URL(idpUrl),
       clientId,
       clientSecret,
+      openidClient.ClientSecretPost(clientSecret ?? ''),
     );
     this.config[openidClient.customFetch] = loggedFetch;
   }
@@ -77,11 +78,15 @@ export class AuthService implements OnModuleInit {
     const { idpUrl, authServerUrl, clientId, clientSecret } =
       this.getRequiredConfig();
 
+    const { resourceClientId, resourceClientSecret } =
+      this.getRequiredConfig();
+
     // Discover the IdP configuration
     const idpConfig = await openidClient.discovery(
       new URL(idpUrl),
       clientId,
       clientSecret,
+      openidClient.ClientSecretPost(clientSecret ?? ''),
     );
     idpConfig[openidClient.customFetch] = loggedFetch;
 
@@ -94,11 +99,12 @@ export class AuthService implements OnModuleInit {
       scope,
     );
 
-    // Step 2: Exchange ID-JAG token for access token
+    // Step 2: Exchange ID-JAG token for access token using resource client credentials
     const resourceAuthConfig = await openidClient.discovery(
       new URL(authServerUrl),
-      clientId,
-      clientSecret,
+      resourceClientId,
+      resourceClientSecret,
+      openidClient.ClientSecretPost(resourceClientSecret ?? ''),
     );
     resourceAuthConfig[openidClient.customFetch] = loggedFetch;
 
@@ -117,14 +123,16 @@ export class AuthService implements OnModuleInit {
     const authServerUrl = this.configService.get<string>('AUTH_SERVER_URL');
     const clientId = this.configService.get<string>('CLIENT_ID');
     const clientSecret = this.configService.get<string>('CLIENT_SECRET');
+    const resourceClientId = this.configService.get<string>('RESOURCE_CLIENT_ID');
+    const resourceClientSecret = this.configService.get<string>('RESOURCE_CLIENT_SECRET');
 
-    if (!idpUrl || !authServerUrl || !clientId) {
+    if (!idpUrl || !authServerUrl || !clientId || !resourceClientId) {
       throw new Error(
-        'IDP_URL, AUTH_SERVER_URL and CLIENT_ID must be configured',
+        'IDP_URL, AUTH_SERVER_URL, CLIENT_ID and RESOURCE_CLIENT_ID must be configured',
       );
     }
 
-    return { idpUrl, authServerUrl, clientId, clientSecret };
+    return { idpUrl, authServerUrl, clientId, clientSecret, resourceClientId, resourceClientSecret };
   }
 
   /**
