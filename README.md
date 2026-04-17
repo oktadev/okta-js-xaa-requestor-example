@@ -31,14 +31,10 @@ npm ci
 
 Register a client application that uses xaa.dev's Identity Provider (IdP) and resource app by following the instructions on the [Client Registration](https://xaa.dev/developer/register) page.
 
-Copy the `.env.example` file to `.env`. 
-
-```sh
-cp .env.example .env
-```
+Duplicate the `.env.example` file and rename it to `.env`.
 
 Save your `client_id` and `client_secret` as values within the `.env` file.
-Double check that the defined URL for the IDP, auth server, and todo resource server.
+Double-check that the defined URL for the IDP, auth server, and todo resource server.
 
 ### Using with GitHub Codespaces
 
