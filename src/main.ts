@@ -56,6 +56,23 @@ async function bootstrap() {
 
   const port = configService.get<number>('PORT') ?? 3000;
   await app.listen(port);
+
+  // Log the appropriate URL based on environment
+  const nodeEnv = configService.get<string>('NODE_ENV') ?? 'development';
+  const isDevelopment = nodeEnv !== 'production';
+  
+  if (isDevelopment) {
+    const codespaceName = process.env.CODESPACE_NAME;
+    
+    if (codespaceName) {
+      const appUrl = `https://${codespaceName}-${port}.app.github.dev`;
+      console.log(`\n🚀 Application is running on: ${appUrl}`);
+      console.log(`ℹ️  Running in GitHub Codespaces environment\n`);
+    } else {
+      const appUrl = `http://localhost:${port}`;
+      console.log(`\n🚀 Application is running on: ${appUrl}\n`);
+    }
+  }
 }
 
 void bootstrap();
