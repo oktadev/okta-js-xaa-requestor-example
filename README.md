@@ -31,7 +31,7 @@ npm ci
 
 Register a client application that uses xaa.dev's Identity Provider (IdP) and resource app by following the instructions on the [Client Registration](https://xaa.dev/developer/register) page.
 
-Copy the `.env.example` file to `.env`:
+Copy the `.env.example` file to `.env`. 
 
 ```sh
 cp .env.example .env
