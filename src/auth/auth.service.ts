@@ -78,11 +78,15 @@ export class AuthService implements OnModuleInit {
     const { idpUrl, authServerUrl, clientId, clientSecret, resourceClientId, resourceClientSecret } =
       this.getRequiredConfig();
 
+    const { resourceClientId, resourceClientSecret } =
+      this.getRequiredConfig();
+
     // Discover the IdP configuration
     const idpConfig = await openidClient.discovery(
       new URL(idpUrl),
       clientId,
       clientSecret,
+      openidClient.ClientSecretPost(clientSecret ?? ''),
     );
     idpConfig[openidClient.customFetch] = loggedFetch;
 
