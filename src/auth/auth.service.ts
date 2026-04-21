@@ -75,10 +75,7 @@ export class AuthService implements OnModuleInit {
     resourceUrl: string,
     scope: string[],
   ): Promise<string> {
-    const { idpUrl, authServerUrl, clientId, clientSecret } =
-      this.getRequiredConfig();
-
-    const { resourceClientId, resourceClientSecret } =
+    const { idpUrl, authServerUrl, clientId, clientSecret, resourceClientId, resourceClientSecret } =
       this.getRequiredConfig();
 
     // Discover the IdP configuration
@@ -112,7 +109,7 @@ export class AuthService implements OnModuleInit {
 
     if (!idpUrl || !authServerUrl || !clientId || !resourceClientId) {
       throw new Error(
-        'IDP_URL, AUTH_SERVER_URL, CLIENT_ID and RESOURCE_CLIENT_ID must be configured',
+        'IDP_URL, AUTH_SERVER_URL, CLIENT_ID, and RESOURCE_CLIENT_ID must be configured',
       );
     }
 
