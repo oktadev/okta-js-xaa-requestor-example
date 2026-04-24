@@ -32,7 +32,7 @@ Register a client application that uses xaa.dev's Identity Provider (IdP) and re
 
 Duplicate the `.env.example` file and rename it to `.env`.
 
-Save your `client_id` and `client_secret` as values within the `.env` file.
+Save your `CLIENT_ID`, `CLIENT_SECRET`, `RESOURCE_CLIENT_ID`, and `RESOURCE_CLIENT_SECRET` as values within the `.env` file. 
 Double check that the defined URL for the IDP, auth server, and todo resource server.
 
 Serve the app
