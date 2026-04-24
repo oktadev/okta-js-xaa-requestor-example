@@ -83,7 +83,6 @@ export class AuthService implements OnModuleInit {
       new URL(idpUrl),
       clientId,
       clientSecret,
-      openidClient.ClientSecretPost(clientSecret ?? ''),
     );
     idpConfig[openidClient.customFetch] = loggedFetch;
 
