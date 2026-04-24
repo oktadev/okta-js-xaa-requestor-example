@@ -23,6 +23,7 @@ export class AuthService implements OnModuleInit {
       new URL(idpUrl),
       clientId,
       clientSecret,
+      openidClient.ClientSecretPost(clientSecret ?? ''),
     );
     this.config[openidClient.customFetch] = loggedFetch;
   }
@@ -74,7 +75,7 @@ export class AuthService implements OnModuleInit {
     resourceUrl: string,
     scope: string[],
   ): Promise<string> {
-    const { idpUrl, authServerUrl, clientId, clientSecret } =
+    const { idpUrl, authServerUrl, clientId, clientSecret, resourceClientId, resourceClientSecret } =
       this.getRequiredConfig();
 
     // Discover the IdP configuration
@@ -87,7 +88,7 @@ export class AuthService implements OnModuleInit {
 
     // Step 1: Exchange ID token for ID-JAG token
 
-    // Step 2: Exchange ID-JAG token for access token
+    // Step 2: Exchange ID-JAG token for access token using resource client credentials
 
     // Placeholder implementation, remove when code is added
     await Promise.resolve();
@@ -102,14 +103,16 @@ export class AuthService implements OnModuleInit {
     const authServerUrl = this.configService.get<string>('AUTH_SERVER_URL');
     const clientId = this.configService.get<string>('CLIENT_ID');
     const clientSecret = this.configService.get<string>('CLIENT_SECRET');
+    const resourceClientId = this.configService.get<string>('RESOURCE_CLIENT_ID');
+    const resourceClientSecret = this.configService.get<string>('RESOURCE_CLIENT_SECRET');
 
-    if (!idpUrl || !authServerUrl || !clientId) {
+    if (!idpUrl || !authServerUrl || !clientId || !resourceClientId) {
       throw new Error(
-        'IDP_URL, AUTH_SERVER_URL and CLIENT_ID must be configured',
+        'IDP_URL, AUTH_SERVER_URL, CLIENT_ID, and RESOURCE_CLIENT_ID must be configured',
       );
     }
 
-    return { idpUrl, authServerUrl, clientId, clientSecret };
+    return { idpUrl, authServerUrl, clientId, clientSecret, resourceClientId, resourceClientSecret };
   }
 
   /**

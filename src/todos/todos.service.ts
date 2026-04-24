@@ -30,7 +30,7 @@ export class TodosService {
     // Get access token via ID-JAG exchange
     const accessToken = await this.authService.exchangeIdTokenForAccessToken(
       idToken,
-      `${resourceServerUrl}/todos`,
+      resourceServerUrl,
       ['todos.read'],
     );
 
