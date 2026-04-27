@@ -3,7 +3,8 @@
 This repository contains a working example of a NestJS web app that requests resources from a third-party app within a trust domain using the [xaa.dev](https://xaa.dev) testing site. Please read [Make Secure App-to-App Connections Using Cross App Access][blog] for a detailed guide through.
 
 **Required tools**
- * [Node.js](https://nodejs.org/en) v22 LTS (recommended). Node v24 users may encounter `npm ci` failures due to a bug in npm v11 — use `npm install` as a workaround or switch to Node v22.
+ * [Node.js](https://nodejs.org/en) v22 LTS. 
+   There is a known issue with Node v24. See https://github.com/nodejs/corepack/issues/813
  * Command-line terminal application
  * A code editor/Integrated development environment (IDE), such as [Visual Studio Code](https://code.visualstudio.com/) (VS Code)
  * [Git](https://git-scm.com/)
